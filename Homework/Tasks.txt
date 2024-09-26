@@ -1,0 +1,7 @@
+Create a program that tracks student performance.
+
+    a. Each entry contains a name of a student and his average score.
+
+    b. Implement the structure, that keep entries in ascending order of average score.
+
+    c. Display the name of 3 best students  in descending order of average score.
