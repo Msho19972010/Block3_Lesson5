@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.NoSuchElementException;
 
 public class ResultBoard {
     StudentComparator comparator = new StudentComparator();
@@ -8,11 +9,17 @@ public class ResultBoard {
 
     void addStudent(String nameAndSurname, Float score) {
         Student student = new Student(nameAndSurname, score);
-        
+
         studentsDataBase.add(student);
     }
 
-    List<String> top3 () {
+    List<String> top3 () throws NoSuchElementException {
+
+        if(studentsDataBase.isEmpty()) {
+            throw new NoSuchElementException("The database is empty");
+        }
+
+        topThreeStudents.clear();
 
         Student theBestStudent = studentsDataBase.last();
 
