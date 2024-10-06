@@ -63,13 +63,25 @@ public class ResultBoard {
     public static class StudentComparator implements Comparator<Student> {
         @Override
         public int compare(Student student1, Student student2) {
-            if(student1.score() == student2.score()) {
-                return 0;
-            } else if (student1.score() > student2.score()) {
-                return 1;
+            int scoreCompare;
+            if(!Objects.equals(student1.score(), student2.score())) {
+                if(Objects.equals(student1.score(), student2.score())) {
+                    scoreCompare = 0;
+                } else if (student2.score() > student1.score()) {
+                    scoreCompare = 1;
+                } else {
+                    scoreCompare = -1;
+                }
             } else {
-                return -1;
+                if(Objects.equals(student1.nameAndSurname(), student2.nameAndSurname())) {
+                    scoreCompare = 0;
+                } else if (student1.nameAndSurname().length() > student2.nameAndSurname().length()) {
+                    scoreCompare = 1;
+                } else {
+                    scoreCompare = -1;
+                }
             }
+            return scoreCompare;
         }
     }
 
