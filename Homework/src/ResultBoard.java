@@ -7,10 +7,14 @@ public class ResultBoard {
     List<String> topThreeStudents = new ArrayList<>(3);
 
 
-    void addStudent(String nameAndSurname, Float score) {
+    void addStudent(String nameAndSurname, Float score) throws EmptyFieldException {
         Student student = new Student(nameAndSurname, score);
 
-        studentsDataBase.add(student);
+        try {
+            studentsDataBase.add(student);
+        } catch (NullPointerException e) {
+            throw new EmptyFieldException("In the field Name or Score, we have the value null, we can't add values like this in our database.");
+        }
     }
 
     List<String> top3 () throws NoSuchElementException {
@@ -21,24 +25,23 @@ public class ResultBoard {
 
         topThreeStudents.clear();
 
-        Student theBestStudent = studentsDataBase.last();
 
         if(studentsDataBase.size() == 1) {
-            topThreeStudents.add(studentsDataBase.first().nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(0).nameAndSurname());
 
         } else if(studentsDataBase.size() == 2) {
-            topThreeStudents.add(studentsDataBase.last().nameAndSurname());
-            topThreeStudents.add(studentsDataBase.first().nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(1).nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(0).nameAndSurname());
 
         } else if(studentsDataBase.size() == 3) {
-            topThreeStudents.add(theBestStudent.nameAndSurname());
-            topThreeStudents.add(studentsDataBase.lower(theBestStudent).nameAndSurname());
-            topThreeStudents.add(studentsDataBase.first().nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(2).nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(1).nameAndSurname());
+            topThreeStudents.add(studentsDataBase.stream().toList().get(0).nameAndSurname());
 
         } else {
-            for(int i = 0; i < 3; i++) {
-                topThreeStudents.add(theBestStudent.nameAndSurname());
-                theBestStudent = studentsDataBase.lower(theBestStudent);
+            for(int i = studentsDataBase.size() - 1; i > studentsDataBase.size() - 4; i --) {
+                topThreeStudents.add(studentsDataBase.stream().toList().get(i).nameAndSurname());
+
             }
         }
 
@@ -49,40 +52,30 @@ public class ResultBoard {
     public static void main (String[] args) {
         ResultBoard resultBoard = new ResultBoard();
         resultBoard.addStudent("Eva Volt", 3.5f);
-        resultBoard.addStudent("Misha Simonian`", 3.5f);
+        resultBoard.addStudent("Misha Simonian", 3.5f);
+        resultBoard.addStudent("Misha Simonian", 3.5f);
+        resultBoard.addStudent("Misha Simonian", 3.5f);
         resultBoard.addStudent("Masha Mishiniova", 4.7f);
         resultBoard.addStudent("Sasha Seraya", 4.3f);
         resultBoard.addStudent("Dasha Chernaia", 3.7f);
         resultBoard.addStudent("Natasha Pereviznik", 2.5f);
         resultBoard.addStudent("Misha Simonian", 4.9f);
         resultBoard.addStudent("Hass Benz", 3.0f);
-
+        resultBoard.addStudent(null, null);
         System.out.println(resultBoard.top3());
     }
 
     public static class StudentComparator implements Comparator<Student> {
         @Override
         public int compare(Student student1, Student student2) {
-            int scoreCompare;
-            if(!Objects.equals(student1.score(), student2.score())) {
-                if(Objects.equals(student1.score(), student2.score())) {
-                    scoreCompare = 0;
-                } else if (student2.score() > student1.score()) {
-                    scoreCompare = 1;
-                } else {
-                    scoreCompare = -1;
-                }
-            } else {
-                if(Objects.equals(student1.nameAndSurname(), student2.nameAndSurname())) {
-                    scoreCompare = 0;
-                } else if (student1.nameAndSurname().length() > student2.nameAndSurname().length()) {
-                    scoreCompare = 1;
-                } else {
-                    scoreCompare = -1;
-                }
-            }
-            return scoreCompare;
-        }
-    }
+            int scoreCompare = student1.score().compareTo(student2.score());
 
+            if (scoreCompare != 0) {
+                return scoreCompare;
+            }
+            return student1.nameAndSurname().compareTo(student2.nameAndSurname());
+
+        }
+
+        }
 }
